@@ -1,12 +1,33 @@
 const scoreCard = document.getElementById("score-card");
 const lastUpdated = document.getElementById("last-updated");
 const refreshBtn = document.getElementById("refresh-btn");
+const loadingIndicator = document.getElementById("loading-indicator");
 
-// CricAPI endpoint for all current matches
+// CricAPI (or your chosen) endpoint for current matches
 const API_URL =
   "https://api.cricapi.com/v1/currentMatches?apikey=fdbc895f-cd4b-47d4-9afd-d4e8a4a1946e&offset=0";
 
+let isLoading = false;
+
+function setLoading(loading) {
+  isLoading = loading;
+
+  if (refreshBtn) {
+    refreshBtn.disabled = loading;
+    refreshBtn.textContent = loading ? "Refreshing..." : "Refresh Now";
+    refreshBtn.style.opacity = loading ? "0.7" : "1";
+    refreshBtn.style.cursor = loading ? "not-allowed" : "pointer";
+  }
+
+  if (loadingIndicator) {
+    loadingIndicator.style.display = loading ? "inline-block" : "none";
+  }
+}
+
 async function fetchScore() {
+  if (isLoading) return; // prevent double requests
+  setLoading(true);
+
   try {
     scoreCard.textContent = "Loading live matches...";
 
@@ -16,7 +37,6 @@ async function fetchScore() {
     }
 
     const data = await response.json();
-
     const matches = data && data.data ? data.data : [];
 
     if (!matches.length) {
@@ -25,14 +45,12 @@ async function fetchScore() {
       return;
     }
 
-    // Build HTML for ALL matches
     let html = "";
 
     matches.forEach((match) => {
       const team1 = match.teams && match.teams[0] ? match.teams[0] : "Team A";
       const team2 = match.teams && match.teams[1] ? match.teams[1] : "Team B";
 
-      // Build score lines for each innings
       let scoreText = "";
       if (Array.isArray(match.score) && match.score.length > 0) {
         scoreText = match.score
@@ -57,7 +75,13 @@ async function fetchScore() {
           <h3 style="margin-bottom: 4px;">
             ${team1} vs ${team2}
           </h3>
-          ${matchType || venue ? `<p style="margin: 0 0 8px 0;"><small>${matchType} ${venue ? "• " + venue : ""}</small></p>` : ""}
+          ${
+            matchType || venue
+              ? `<p style="margin: 0 0 8px 0;"><small>${matchType}${
+                  venue ? " • " + venue : ""
+                }</small></p>`
+              : ""
+          }
           <p style="margin: 0 0 8px 0;">${scoreText}</p>
           <p style="margin: 0;"><em>${status}</em></p>
         </div>
@@ -71,4 +95,21 @@ async function fetchScore() {
   } catch (err) {
     console.error(err);
     scoreCard.textContent =
-      "Error loading live matches. P
+      "Error loading live matches. Please try again later.";
+  } finally {
+    setLoading(false);
+  }
+}
+
+// first load
+fetchScore();
+
+// auto-refresh every 30 seconds
+setInterval(fetchScore, 30000);
+
+// "Refresh Now" button
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    fetchScore();
+  });
+}
