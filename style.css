@@ -208,6 +208,22 @@ body {
   color: #1565c0;
 }
 
+/* Flags for teams */
+.flag {
+  width: 18px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.team-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* Sidebar */
 .sidebar {
   display: flex;
@@ -243,42 +259,7 @@ body {
   color: #1565c0;
 }
 
-/* Footer */
-.footer {
-  text-align: center;
-  font-size: 12px;
-  color: #666;
-  padding: 16px 0 24px;
-}
-.flag {
-  width: 18px;
-  height: 12px;
-  object-fit: cover;
-  border-radius: 2px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.team-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.flag {
-  width: 18px;
-  height: 12px;
-  object-fit: cover;
-  border-radius: 2px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.team-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
+/* Player card */
 .player-card {
   border-top: 1px solid #e0e0e0;
   padding-top: 8px;
@@ -301,4 +282,12 @@ body {
   height: 14px;
   object-fit: cover;
   border-radius: 2px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  padding: 16px 0 24px;
 }

@@ -25,7 +25,7 @@
   <!-- Page layout -->
   <div class="page">
     <main class="main-column">
-      <!-- Tabs + controls -->
+      <!-- Scores area -->
       <section class="matches-section">
         <div class="section-header">
           <h1>Cricket Scores &amp; Fixtures</h1>
@@ -81,6 +81,25 @@
           <li><a href="#">T20 Leagues</a></li>
           <li><a href="#">Team Profiles</a></li>
         </ul>
+      </section>
+
+      <!-- PLAYER SEARCH CARD -->
+      <section class="card sidebar-card">
+        <h2>Player Search</h2>
+        <input
+          id="player-search-input"
+          type="text"
+          placeholder="Type player name"
+          style="width: 100%; padding: 6px; margin-bottom: 6px; font-size: 14px;"
+        />
+        <button
+          id="player-search-btn"
+          class="btn-primary"
+          style="width: 100%; margin-bottom: 8px;"
+        >
+          Find Player
+        </button>
+        <div id="player-result" style="font-size: 13px;"></div>
       </section>
     </aside>
   </div>

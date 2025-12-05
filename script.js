@@ -1,4 +1,4 @@
-// ---------------- DOM ELEMENTS ----------------
+// ---------- DOM ELEMENTS ----------
 const liveContainer = document.getElementById("live-matches");
 const upcomingContainer = document.getElementById("upcoming-matches");
 const completedContainer = document.getElementById("completed-matches");
@@ -7,21 +7,20 @@ const refreshBtn = document.getElementById("refresh-btn");
 const loadingIndicator = document.getElementById("loading-indicator");
 const tabs = document.querySelectorAll(".tab");
 
-// player search elements (in sidebar)
+// Player search
 const playerInput = document.getElementById("player-search-input");
 const playerBtn = document.getElementById("player-search-btn");
 const playerResult = document.getElementById("player-result");
 
-// ---------------- API CONFIG ----------------
+// ---------- API CONFIG ----------
 const API_KEY = "fdbc895f-cd4b-47d4-9afd-d4e8a4a1946e"; // your CricAPI key
-
 const MATCHES_URL = `https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}&offset=0`;
 const PLAYER_SEARCH_URL = `https://api.cricapi.com/v1/players?apikey=${API_KEY}&offset=0&search=`;
 const PLAYER_INFO_URL = `https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=`;
 
 let isLoading = false;
 
-// ---------------- FLAGS ----------------
+// ---------- FLAGS ----------
 const teamFlagMap = {
   India: "https://flagcdn.com/w40/in.png",
   "India Women": "https://flagcdn.com/w40/in.png",
@@ -89,7 +88,7 @@ function getCountryFlag(countryName) {
   return null;
 }
 
-// ---------------- LOADING STATE ----------------
+// ---------- LOADING ----------
 function setLoading(loading) {
   isLoading = loading;
 
@@ -111,7 +110,7 @@ function clearContainers() {
   if (completedContainer) completedContainer.innerHTML = "";
 }
 
-// ---------------- STATUS CLASSIFICATION ----------------
+// ---------- STATUS BUCKET ----------
 function classifyStatus(statusRaw) {
   const status = (statusRaw || "").toLowerCase();
 
@@ -141,7 +140,7 @@ function classifyStatus(statusRaw) {
   return "live";
 }
 
-// ---------------- MATCH CARD ----------------
+// ---------- MATCH CARD ----------
 function createMatchCard(match, bucket) {
   const rawTeam1 = match.teams && match.teams[0] ? match.teams[0] : "Team A";
   const rawTeam2 = match.teams && match.teams[1] ? match.teams[1] : "Team B";
@@ -189,7 +188,7 @@ function createMatchCard(match, bucket) {
   return div;
 }
 
-// ---------------- FETCH MATCHES ----------------
+// ---------- FETCH MATCHES ----------
 async function fetchScores() {
   if (!liveContainer || !upcomingContainer || !completedContainer) return;
   if (isLoading) return;
@@ -272,7 +271,7 @@ async function fetchScores() {
   }
 }
 
-// ---------------- PLAYER SEARCH ----------------
+// ---------- PLAYER SEARCH ----------
 async function searchPlayerByName(name) {
   if (!playerResult) return;
 
@@ -284,7 +283,6 @@ async function searchPlayerByName(name) {
   playerResult.innerHTML = "<p>Searching player...</p>";
 
   try {
-    // 1) Search for player to get ID
     const searchResp = await fetch(
       PLAYER_SEARCH_URL + encodeURIComponent(name)
     );
@@ -298,10 +296,9 @@ async function searchPlayerByName(name) {
       return;
     }
 
-    const player = searchData.data[0]; // first result
+    const player = searchData.data[0];
     const playerId = player.id;
 
-    // 2) Fetch detailed info
     const infoResp = await fetch(
       PLAYER_INFO_URL + encodeURIComponent(playerId)
     );
@@ -373,11 +370,10 @@ async function searchPlayerByName(name) {
   } catch (err) {
     console.error(err);
     playerResult.innerHTML =
-      "<p>Error fetching player data (maybe quota or CORS). Try again later.</p>";
+      "<p>Error fetching player data. Maybe quota or CORS issue.</p>";
   }
 }
 
-// hook up the search input + button
 if (playerBtn && playerInput && playerResult) {
   playerBtn.addEventListener("click", () => {
     searchPlayerByName(playerInput.value.trim());
@@ -390,7 +386,7 @@ if (playerBtn && playerInput && playerResult) {
   });
 }
 
-// ---------------- TABS ----------------
+// ---------- TABS ----------
 if (tabs && tabs.length) {
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -414,7 +410,7 @@ if (tabs && tabs.length) {
   });
 }
 
-// ---------------- REFRESH BUTTON + INITIAL LOAD ----------------
+// ---------- REFRESH BUTTON + INITIAL LOAD ----------
 if (refreshBtn) {
   refreshBtn.addEventListener("click", fetchScores);
 }
