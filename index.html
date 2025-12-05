@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>My CMD Website</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <title>Live Cricket Score</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Command Prompt Website</h1>
-        <p>Built using only CMD + Notepad 💻</p>
-    </header>
+  <header>
+    <h1>Live Cricket Scores</h1>
+    <p>Powered by a public cricket API</p>
+  </header>
 
-    <main>
-        <section>
-            <h2>About This Site</h2>
-            <p>
-                This website was created entirely from the Windows Command Prompt.
-                No fancy editors, just pure text and commands.
-            </p>
-        </section>
+  <main>
+    <section>
+      <h2>Current Match</h2>
+      <div id="score-card">
+        <p>Loading live score...</p>
+      </div>
+      <p id="last-updated"></p>
+    </section>
+  </main>
 
-        <section>
-            <h2>Click the Button</h2>
-            <button id="helloBtn">Say Hello</button>
-            <p id="message"></p>
-        </section>
-    </main>
+  <footer>
+    <p>&copy; 2025 Ashish’s Cricket Updates</p>
+  </footer>
 
-    <footer>
-        <p>&copy; 2025 My CMD Website</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
