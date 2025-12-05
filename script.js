@@ -61,3 +61,11 @@ fetchScore();
 
 // then refresh every 30 seconds
 setInterval(fetchScore, 30000);
+// --- REFRESH NOW BUTTON ---
+const refreshBtn = document.getElementById("refresh-btn");
+
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    fetchScore(); // reload immediately
+  });
+}
