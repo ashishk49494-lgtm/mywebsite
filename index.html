@@ -2,37 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Cricket Score</title>
+  <title>Ashish Cricinfo</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Live Cricket Scores</h1>
-    <p>Powered by a public cricket API</p>
+  <!-- Top navigation bar -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <span class="brand-main">Ashish</span>
+        <span class="brand-sub">Cricinfo</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#" class="active">Live Scores</a>
+        <a href="#">Results</a>
+        <a href="#">Fixtures</a>
+        <a href="#">Teams</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section>
-      <h2>Current Match</h2>
-      <div id="score-card">
-        <p>Loading live score...</p>
-      </div>
-      <p id="last-updated"></p>                                                                                <button id="refresh-btn" style="
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  background: #007bff;
-  color: white;
-  cursor: pointer;
-  margin-top: 10px;
-">Refresh Now</button>
-     <span id="loading-indicator" style="display:none; margin-left: 8px;">⏳</span>                                                                                          
-    </section>
-  </main>
+  <!-- Page layout -->
+  <div class="page">
+    <main class="main-column">
+      <!-- Tabs + controls -->
+      <section class="matches-section">
+        <div class="section-header">
+          <h1>Cricket Scores & Fixtures</h1>
+          <div class="controls">
+            <button id="refresh-btn" class="btn-primary">
+              Refresh Now
+            </button>
+            <span id="loading-indicator" class="loading-indicator" style="display:none;">
+              ⏳ Refreshing...
+            </span>
+          </div>
+        </div>
 
-  <footer>
-    <p>&copy; 2025 Ashish’s Cricket Updates</p>
+        <p id="last-updated" class="last-updated"></p>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" data-tab="live">Live</button>
+          <button class="tab" data-tab="upcoming">Upcoming</button>
+          <button class="tab" data-tab="completed">Results</button>
+        </div>
+
+        <!-- Match lists -->
+        <div id="live-matches" class="matches-list active">
+          <p class="placeholder">Loading live matches...</p>
+        </div>
+
+        <div id="upcoming-matches" class="matches-list">
+          <p class="placeholder">No upcoming matches loaded yet.</p>
+        </div>
+
+        <div id="completed-matches" class="matches-list">
+          <p class="placeholder">No recent results loaded yet.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sidebar like Cricinfo: news & extras -->
+    <aside class="sidebar">
+      <section class="card sidebar-card">
+        <h2>Top Stories</h2>
+        <ul class="news-list">
+          <li><a href="#">Your custom news item 1</a></li>
+          <li><a href="#">Add real cricket news later</a></li>
+          <li><a href="#">Maybe link to ESPNcricinfo / Cricbuzz</a></li>
+        </ul>
+      </section>
+
+      <section class="card sidebar-card">
+        <h2>Quick Links</h2>
+        <ul class="news-list">
+          <li><a href="#">ICC Rankings</a></li>
+          <li><a href="#">T20 Leagues</a></li>
+          <li><a href="#">Team Profiles</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <p>Made by Ashish • Data from cricket API • Not affiliated with ESPNcricinfo</p>
   </footer>
 
   <script src="script.js"></script>

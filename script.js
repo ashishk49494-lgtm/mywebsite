@@ -1,9 +1,11 @@
-const scoreCard = document.getElementById("score-card");
+const liveContainer = document.getElementById("live-matches");
+const upcomingContainer = document.getElementById("upcoming-matches");
+const completedContainer = document.getElementById("completed-matches");
 const lastUpdated = document.getElementById("last-updated");
 const refreshBtn = document.getElementById("refresh-btn");
 const loadingIndicator = document.getElementById("loading-indicator");
+const tabs = document.querySelectorAll(".tab");
 
-// CricAPI (or your chosen) endpoint for current matches
 const API_URL =
   "https://api.cricapi.com/v1/currentMatches?apikey=fdbc895f-cd4b-47d4-9afd-d4e8a4a1946e&offset=0";
 
@@ -24,92 +26,189 @@ function setLoading(loading) {
   }
 }
 
-async function fetchScore() {
-  if (isLoading) return; // prevent double requests
+function clearContainers() {
+  liveContainer.innerHTML = "";
+  upcomingContainer.innerHTML = "";
+  completedContainer.innerHTML = "";
+}
+
+function classifyStatus(statusRaw) {
+  const status = (statusRaw || "").toLowerCase();
+
+  if (
+    status.includes("won") ||
+    status.includes("lost") ||
+    status.includes("draw") ||
+    status.includes("no result") ||
+    status.includes("tie")
+  ) {
+    return "completed";
+  }
+
+  if (
+    status.includes("scheduled") ||
+    status.includes("upcoming") ||
+    status.includes("yet to begin") ||
+    status.includes("start at") ||
+    status.includes("not started")
+  ) {
+    return "upcoming";
+  }
+
+  return "live";
+}
+
+function createMatchCard(match, bucket) {
+  const team1 = match.teams && match.teams[0] ? match.teams[0] : "Team A";
+  const team2 = match.teams && match.teams[1] ? match.teams[1] : "Team B";
+
+  let scoreText = "";
+  if (Array.isArray(match.score) && match.score.length > 0) {
+    scoreText = match.score
+      .map((inn) => {
+        const inningName = inn.inning || "Inning";
+        const runs = inn.r ?? 0;
+        const wickets = inn.w ?? 0;
+        const overs = inn.o ?? 0;
+        return `${inningName}: ${runs}/${wickets} in ${overs} overs`;
+      })
+      .join("<br>");
+  } else {
+    scoreText = "Score not available yet.";
+  }
+
+  const statusRaw = match.status || "Status not available";
+  const statusClass =
+    bucket === "completed"
+      ? "match-status completed"
+      : bucket === "upcoming"
+      ? "match-status upcoming"
+      : "match-status";
+  const venue = match.venue || "";
+  const matchType = match.matchType || "";
+
+  const div = document.createElement("div");
+  div.className = "match-card";
+  div.innerHTML = `
+    <div class="match-header">
+      <span>${team1} vs ${team2}</span>
+      <span>${matchType ? matchType.toUpperCase() : ""}</span>
+    </div>
+    <div class="match-meta">
+      ${venue}
+    </div>
+    <div class="match-score">
+      ${scoreText}
+    </div>
+    <div class="${statusClass}">
+      ${statusRaw}
+    </div>
+  `;
+  return div;
+}
+
+async function fetchScores() {
+  if (isLoading) return;
   setLoading(true);
 
   try {
-    scoreCard.textContent = "Loading live matches...";
+    liveContainer.innerHTML = '<p class="placeholder">Loading live matches...</p>';
+    upcomingContainer.innerHTML =
+      '<p class="placeholder">Loading upcoming matches...</p>';
+    completedContainer.innerHTML =
+      '<p class="placeholder">Loading recent results...</p>';
 
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error("Network response was not ok: " + response.status);
+    const resp = await fetch(API_URL);
+    if (!resp.ok) {
+      throw new Error("Network response was not ok: " + resp.status);
     }
 
-    const data = await response.json();
+    const data = await resp.json();
     const matches = data && data.data ? data.data : [];
 
+    clearContainers();
+
     if (!matches.length) {
-      scoreCard.textContent = "No live matches available right now.";
+      liveContainer.innerHTML =
+        '<p class="placeholder">No matches available.</p>';
+      upcomingContainer.innerHTML =
+        '<p class="placeholder">No upcoming matches.</p>';
+      completedContainer.innerHTML =
+        '<p class="placeholder">No recent results.</p>';
       lastUpdated.textContent = "";
       return;
     }
 
-    let html = "";
+    let liveCount = 0;
+    let upcomingCount = 0;
+    let completedCount = 0;
 
     matches.forEach((match) => {
-      const team1 = match.teams && match.teams[0] ? match.teams[0] : "Team A";
-      const team2 = match.teams && match.teams[1] ? match.teams[1] : "Team B";
+      const bucket = classifyStatus(match.status);
+      const card = createMatchCard(match, bucket);
 
-      let scoreText = "";
-      if (Array.isArray(match.score) && match.score.length > 0) {
-        scoreText = match.score
-          .map((inn) => {
-            const inningName = inn.inning || "Inning";
-            const runs = inn.r ?? 0;
-            const wickets = inn.w ?? 0;
-            const overs = inn.o ?? 0;
-            return `${inningName}: ${runs}/${wickets} in ${overs} overs`;
-          })
-          .join("<br>");
+      if (bucket === "live") {
+        liveContainer.appendChild(card);
+        liveCount++;
+      } else if (bucket === "upcoming") {
+        upcomingContainer.appendChild(card);
+        upcomingCount++;
       } else {
-        scoreText = "Score not available yet.";
+        completedContainer.appendChild(card);
+        completedCount++;
       }
-
-      const status = match.status || "Status not available";
-      const venue = match.venue || "";
-      const matchType = match.matchType || "";
-
-      html += `
-        <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #ddd;">
-          <h3 style="margin-bottom: 4px;">
-            ${team1} vs ${team2}
-          </h3>
-          ${
-            matchType || venue
-              ? `<p style="margin: 0 0 8px 0;"><small>${matchType}${
-                  venue ? " • " + venue : ""
-                }</small></p>`
-              : ""
-          }
-          <p style="margin: 0 0 8px 0;">${scoreText}</p>
-          <p style="margin: 0;"><em>${status}</em></p>
-        </div>
-      `;
     });
 
-    scoreCard.innerHTML = html;
+    if (!liveCount) {
+      liveContainer.innerHTML =
+        '<p class="placeholder">No live matches right now.</p>';
+    }
+    if (!upcomingCount) {
+      upcomingContainer.innerHTML =
+        '<p class="placeholder">No upcoming matches found.</p>';
+    }
+    if (!completedCount) {
+      completedContainer.innerHTML =
+        '<p class="placeholder">No recent results found.</p>';
+    }
 
     const now = new Date();
     lastUpdated.textContent = "Last updated: " + now.toLocaleTimeString();
   } catch (err) {
     console.error(err);
-    scoreCard.textContent =
-      "Error loading live matches. Please try again later.";
+    liveContainer.innerHTML =
+      '<p class="placeholder">Error loading matches. Please try again.</p>';
   } finally {
     setLoading(false);
   }
 }
 
-// first load
-fetchScore();
+// Tabs logic
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const target = tab.dataset.tab;
+    tabs.forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
 
-// auto-refresh every 30 seconds
-setInterval(fetchScore, 30000);
+    document
+      .querySelectorAll(".matches-list")
+      .forEach((list) => list.classList.remove("active"));
 
-// "Refresh Now" button
-if (refreshBtn) {
-  refreshBtn.addEventListener("click", () => {
-    fetchScore();
+    if (target === "live") {
+      liveContainer.classList.add("active");
+    } else if (target === "upcoming") {
+      upcomingContainer.classList.add("active");
+    } else {
+      completedContainer.classList.add("active");
+    }
   });
+});
+
+// Refresh button
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", fetchScores);
 }
+
+// Initial load + auto-refresh
+fetchScores();
+setInterval(fetchScores, 30000);
