@@ -264,3 +264,41 @@ body {
   align-items: center;
   gap: 6px;
 }
+.flag {
+  width: 18px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.team-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-card {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.player-name {
+  font-weight: 600;
+}
+
+.player-country-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+}
