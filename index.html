@@ -111,3 +111,73 @@
   <script src="script.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ashish Cricinfo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <span class="brand-main">Ashish</span>
+      <span class="brand-sub">Cricinfo</span>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Live Scores</a>
+      <a href="players.html">Players</a>
+      <a href="#">Teams</a>
+      <a href="#">Results</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+  <main class="main-column">
+    <section class="matches-section">
+      <div class="section-header">
+        <h1>Cricket Scores & Fixtures</h1>
+        <div class="controls">
+          <button id="refresh-btn" class="btn-primary">Refresh Now</button>
+          <span id="loading-indicator" class="loading-indicator" style="display:none;">⏳ Refreshing...</span>
+        </div>
+      </div>
+
+      <p id="last-updated" class="last-updated"></p>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="live">Live</button>
+        <button class="tab" data-tab="upcoming">Upcoming</button>
+        <button class="tab" data-tab="completed">Results</button>
+      </div>
+
+      <div id="live-matches" class="matches-list active"></div>
+      <div id="upcoming-matches" class="matches-list"></div>
+      <div id="completed-matches" class="matches-list"></div>
+
+    </section>
+  </main>
+
+  <aside class="sidebar">
+
+    <section class="card sidebar-card">
+      <h2>PLAYER SEARCH</h2>
+
+      <input id="player-search-input" type="text" placeholder="Type a player name..." class="input-field">
+      <div id="player-suggestions" class="suggest-box"></div>
+
+      <button id="player-search-btn" class="btn-primary" style="width:100%;">Search</button>
+
+      <div id="player-popup" class="player-popup hidden"></div>
+    </section>
+
+  </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
